@@ -7,6 +7,7 @@ import struct
 import sys
 import time
 
+# Load the existing data
 openFile = open('data.json', 'r')
 data = json.load(openFile)
 dataarray = data['ComputerIDs']
@@ -47,13 +48,14 @@ while True:
         address = peer[0]
         # Make sure we havent seen it before (this session)
         if not address in seenAddresses:
-
             # Grab hostname and port
             try:
                 hostname = socket.gethostbyaddr(address)[0]
             except:
                 hostname = "Could not retrieve Hostname"
+            # Clean up the input and extract the info
             after = str(msg).split("[AD]")
+            # Check for server port
             groups = portRegex.search(after[1])
             serverport = groups.group(2)
             postnetty = False
@@ -77,6 +79,7 @@ while True:
                   )
             seenAddresses.append(address)
 
+            # Add some default info if this host hasnt been seen before
             if not hostname in dataarray.keys():
                 dataarray[hostname] = []
             servername = re.sub(r'\[AD\].*\[/AD\]',
